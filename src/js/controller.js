@@ -5,6 +5,8 @@ import resultsView from './views/resultsView.js';
 import bookmarksView from './views/bookmarksView.js';
 import View from './views/View.js';
 import paginationView from './views/paginationView.js';
+import addRecipeView from './views/addRecipeView.js';
+import { MODAL_CLOSE_SEC } from './config.js';
 
 // if (model.hot) {
 //   model.hot.accept();
@@ -100,6 +102,40 @@ const controlAddBookmark = function () {
 const controlBookmarks = function () {
   bookmarksView.render(model.state.bookmarks);
 };
+const controlAddRecipe = async function (newRecipe) {
+  try {
+    ///SPiner
+
+    addRecipeView.renderSpinner();
+    // console.log(newRecipe);
+
+    ///Upload the new recipe data
+    await model.uploadRecipe(newRecipe);
+
+    //render
+
+    recipeView.render(model.state.recipe);
+
+    //Success message\\
+    addRecipeView.renderMessage();
+
+    //render bookmark view
+
+    bookmarksView.render(model.state.bookmarks);
+
+    ///Change ID in URL
+    window.history.pushState(null, '', `#${model.state.recipe.id}`);
+    //close form window
+
+    setTimeout(function () {
+      addRecipeView.toggleWindow();
+    }, MODAL_CLOSE_SEC * 1000);
+  } catch (err) {
+    console.error('baaam', err);
+    addRecipeView.renderError(err.message);
+  }
+};
+
 ///Publisher Subscriber pattern   ostatak u recipeView
 const init = function () {
   bookmarksView.addHadlerRender(controlBookmarks);
@@ -108,6 +144,7 @@ const init = function () {
   recipeView.addHandlerBookmark(controlAddBookmark);
   searchView.addHandelerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+  addRecipeView.addHandlerUpload(controlAddRecipe);
 };
 init();
 // window.addEventListener('hashchange', showRecipe);
