@@ -1,7 +1,7 @@
 import View from './View.js';
 
 import icons from 'url:../../img/icons.svg'; //parcel 2
-import { Fraction } from 'fractional';
+//import { Fraction } from 'fractional';
 import fracty from 'fracty';
 
 class RecipeView extends View {
